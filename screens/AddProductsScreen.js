@@ -9,6 +9,7 @@ import {
 import ProductItem from '../components/ProductItem';
 import { useEffect, useState } from 'react';
 import Colors from '../constants/colors';
+import ProductsList from '../components/ProductsList';
 
 const products = [
 	{
@@ -114,78 +115,7 @@ const products = [
 ];
 
 function AddProductsScreen() {
-	const [inputData, setInputData] = useState('');
-	const [choosenProducts, setChoosenProducts] = useState(products);
-
-	useEffect(() => {
-		const filtredProducts = products.filter((product) =>
-			product.title.toLowerCase().includes(inputData.toLowerCase())
-		);
-		setChoosenProducts(filtredProducts);
-	}, [inputData]);
-
-	return (
-		<View style={styles.productsContainer}>
-			<View style={styles.menuTopContainer}>
-				<TextInput
-					style={styles.inputStyle}
-					onChangeText={setInputData}
-					placeholder='Search'
-				/>
-			</View>
-			<View style={styles.flatListStyle}>
-				<FlatList
-					data={choosenProducts}
-					renderItem={({ item }) => <ProductItem item={item}></ProductItem>}
-					ListEmptyComponent={
-						<Text style={{ textAlign: 'center' }}>No items found</Text>
-					}
-					keyExtractor={(item) => item.id}
-					style={styles.flatstyle}
-					contentContainerStyle={{ paddingBottom: 24 }}
-					showsVerticalScrollIndicator={false}
-				/>
-			</View>
-		</View>
-	);
+	return <ProductsList items={products} />;
 }
 
 export default AddProductsScreen;
-
-const styles = StyleSheet.create({
-	root: { flex: 1 },
-	productsContainer: {
-		flex: 1,
-		alignItems: 'center',
-		marginTop: Platform.OS === 'android' && 25,
-	},
-	menuTopContainer: {
-		position: 'absolute',
-		alignItems: 'center',
-		width: '100%',
-		marginTop: 30,
-	},
-	inputStyle: {
-		backgroundColor: Colors.white,
-		padding: 10,
-		fontSize: 16,
-		width: '80%',
-		borderRadius: 16,
-		shadowRadius: 1,
-		shadowOffset: { height: 1, width: 0 },
-		shadowOpacity: 0.2,
-		elevation: 2,
-	},
-
-	flatListStyle: {
-		flex: 1,
-		marginTop: 70,
-		marginHorizontal: 'auto',
-		width: '80%',
-		zIndex: -1,
-	},
-	flatstyle: {
-		paddingVertical: 24,
-		zIndex: 1,
-	},
-});

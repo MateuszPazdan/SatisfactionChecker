@@ -73,9 +73,7 @@ export default function App() {
 									headerTitleAlign: 'center',
 								}}
 								name='favouriteProducts'
-								children={() => (
-									<FavProductsScreen setCurrentRoute={setCurrentRoute} />
-								)}
+								children={() => <FavProductsScreen />}
 							/>
 							<Tab.Screen
 								options={{

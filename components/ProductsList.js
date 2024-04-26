@@ -10,18 +10,16 @@ import {
 import ProductItem from './ProductItem';
 import Colors from '../constants/colors';
 
-function ProductsList({ items }) {
+function ProductsList({ items, isLoading }) {
 	const [inputData, setInputData] = useState('');
-	const [choosenProducts, setChoosenProducts] = useState(
-		items.sort((a, b) => a.readyIn - b.readyIn)
-	);
+	const [choosenProducts, setChoosenProducts] = useState(items);
 
 	useEffect(() => {
-		const filtredProducts = items.filter((product) =>
-			product.title.toLowerCase().includes(inputData.toLowerCase())
+		const filtredProducts = items?.filter((product) =>
+			product.name.toLowerCase().includes(inputData.toLowerCase())
 		);
 		setChoosenProducts(filtredProducts);
-	}, [inputData]);
+	}, [inputData, items]);
 
 	return (
 		<View style={styles.listContainer}>
@@ -35,11 +33,17 @@ function ProductsList({ items }) {
 			<View style={styles.flatListContainer}>
 				<FlatList
 					data={choosenProducts}
-					renderItem={({ item }) => (
-						<ProductItem item={item} readyIn={item.readyIn}></ProductItem>
-					)}
+					renderItem={({ item }) => <ProductItem item={item}></ProductItem>}
 					ListEmptyComponent={
-						<Text style={{ textAlign: 'center' }}>No items found</Text>
+						isLoading ? (
+							<Text style={{ textAlign: 'center', fontSize: 18 }}>
+								Loading...
+							</Text>
+						) : (
+							<Text style={{ textAlign: 'center', fontSize: 18 }}>
+								No items found
+							</Text>
+						)
 					}
 					keyExtractor={(item) => item.id}
 					style={styles.flatList}

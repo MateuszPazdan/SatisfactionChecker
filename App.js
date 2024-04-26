@@ -24,7 +24,6 @@ import MenuPanel from './components/MenuPanel';
 export default function App() {
 	const [userPhoneNumber, setUserPhoneNumber] = useState();
 	const [isAuthenticated, setIsAuthenticated] = useState(true);
-	const [currentRoute, setCurrentRoute] = useState('');
 
 	const Tab = createBottomTabNavigator();
 
@@ -44,9 +43,32 @@ export default function App() {
 		},
 	});
 
+	const [data, setData] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
+
+	async function fetchData() {
+		setIsLoading(true);
+		const response = await fetch('http://localhost:5170/api/Products', {
+			method: 'GET',
+			headers: {
+				accept: 'text/plain',
+			},
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			setData(data);
+			console.log(data);
+		} else {
+			console.log('Problem:', response.status);
+		}
+
+		setIsLoading(false);
+	}
+
 	useEffect(() => {
-		console.log(currentRoute);
-	}, [currentRoute]);
+		fetchData();
+	}, []);
 
 	return (
 		<SafeAreaView style={styles.screen}>
@@ -73,7 +95,7 @@ export default function App() {
 									headerTitleAlign: 'center',
 								}}
 								name='favouriteProducts'
-								children={() => <FavProductsScreen />}
+								children={() => <FavProductsScreen productsList={data} />}
 							/>
 							<Tab.Screen
 								options={{
@@ -84,7 +106,12 @@ export default function App() {
 									),
 								}}
 								name='AddProductsScreen'
-								component={AddProductsScreen}
+								children={() => (
+									<AddProductsScreen
+										productsList={data}
+										isLoading={isLoading}
+									/>
+								)}
 							/>
 							<Tab.Screen
 								accessibilityRole='button'

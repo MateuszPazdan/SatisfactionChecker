@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 function ProductItem({ item, readyIn }) {
 	const navigation = useNavigation();
 
-	const { imageLink, title } = item;
+	const { image, name } = item;
 
 	function pressHandler() {
 		navigation.navigate('formScreen');
@@ -25,9 +25,8 @@ function ProductItem({ item, readyIn }) {
 				android_ripple={{ color: Colors.whiteHover }}
 				onPress={readyIn == 0 || readyIn == null ? pressHandler : null}
 			>
-				{/* {readyIn > 0 && <View style={styles.containerShadow}></View>} */}
-				<Image style={styles.image} source={{ uri: imageLink }} />
-				<Text style={styles.itemText}>{title}</Text>
+				<Image style={styles.image} source={{ uri: image }} />
+				<Text style={styles.itemText}>{name}</Text>
 				<Text style={styles.icon}>
 					{readyIn > 0 ? (
 						<View style={styles.counterContainer}>

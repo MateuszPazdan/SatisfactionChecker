@@ -1,7 +1,7 @@
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Colors from '../constants/colors';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { FontAwesome, AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
 
 function MenuPanel({ onLogout }) {
 	const sizeOfIcon = 18;

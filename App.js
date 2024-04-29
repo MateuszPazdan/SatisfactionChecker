@@ -21,7 +21,7 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 
 export default function App() {
-	const [userPhoneNumber, setUserPhoneNumber] = useState('733949591');
+	const [userPhoneNumber, setUserPhoneNumber] = useState('');
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	const Tab = createBottomTabNavigator();

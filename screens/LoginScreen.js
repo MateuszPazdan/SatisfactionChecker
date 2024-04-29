@@ -5,14 +5,13 @@ import {
 	Image,
 	Text,
 	Pressable,
-	KeyboardAvoidingView,
-	ScrollView,
 	Keyboard,
 	TouchableWithoutFeedback,
 } from 'react-native';
 import Button from '../components/Button';
 import TextInputComponent from '../components/TextInputComponent';
 import Colors from '../constants/colors';
+import { API_KEY } from '../util/http';
 
 function LoginScreen({
 	userPhoneNumber,
@@ -22,18 +21,38 @@ function LoginScreen({
 	const [phoneNumber, setPhoneNumber] = useState();
 	const [smsCode, setSmsCode] = useState();
 	const [verificationCode, setVerificationCode] = useState();
+	const [error, setError] = useState('');
 
 	function confirmHandle() {
 		setPhoneNumber('');
 		setVerificationCode('');
 		if (userPhoneNumber) {
-			if (true) {
-				///sprawdzenie czy kod z maila ok
+			if (smsCode === verificationCode) {
 				setIsAuthenticated(true);
+				setError('');
+			} else {
+				setError('Incorrect Code');
 			}
 		} else {
 			setUserPhoneNumber(phoneNumber);
+			getCode();
 		}
+	}
+
+	function cancelHandler() {
+		setUserPhoneNumber('');
+		setError('');
+	}
+
+	async function getCode() {
+		const response = await fetch(
+			`${API_KEY}/api/MFA/sendMFA?phoneNumber=${phoneNumber}`,
+			{
+				method: 'POST',
+			}
+		);
+		const data = await response.json();
+		setSmsCode(data.code);
 	}
 
 	return (
@@ -56,17 +75,24 @@ function LoginScreen({
 					/>
 				) : (
 					<>
-						<TextInputComponent
-							placeholder='Code'
-							autoCorrect={false}
-							keyboardType='number-pad'
-						/>
-						<Pressable>
-							<Text style={styles.codeText}>Get code</Text>
-						</Pressable>
+						<View style={styles.inputContainer}>
+							<TextInputComponent
+								placeholder='Code'
+								autoCorrect={false}
+								keyboardType='number-pad'
+								value={verificationCode}
+								onChangeText={setVerificationCode}
+							/>
+							{error && userPhoneNumber && (
+								<Text style={styles.errorText}>{error}</Text>
+							)}
+						</View>
 					</>
 				)}
-				<Button onPress={confirmHandle}>Log in</Button>
+				<View style={styles.btnContainer}>
+					{userPhoneNumber && <Button onPress={cancelHandler}>Cancel</Button>}
+					<Button onPress={confirmHandle}>Log in</Button>
+				</View>
 			</View>
 		</TouchableWithoutFeedback>
 	);
@@ -95,6 +121,22 @@ const styles = StyleSheet.create({
 	},
 	logoText: { textAlign: 'center', fontSize: 16 },
 	codeText: {
+		fontSize: 16,
+		color: Colors.shadowBlack,
+	},
+	btnContainer: {
+		flexDirection: 'row',
+	},
+	inputContainer: {
+		position: 'relative',
+		width: '100%',
+		alignItems: 'center',
+	},
+	errorText: {
+		position: 'absolute',
+		bottom: -25,
+		left: 60,
+		color: 'red',
 		fontSize: 16,
 	},
 });

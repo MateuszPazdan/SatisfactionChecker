@@ -10,7 +10,7 @@ import {
 import ProductItem from './ProductItem';
 import Colors from '../constants/colors';
 
-function ProductsList({ items, isLoading }) {
+function ProductsList({ items, isLoading, opinionsList }) {
 	const [inputData, setInputData] = useState('');
 	const [choosenProducts, setChoosenProducts] = useState(items);
 
@@ -31,25 +31,32 @@ function ProductsList({ items, isLoading }) {
 				/>
 			</View>
 			<View style={styles.flatListContainer}>
-				<FlatList
-					data={choosenProducts}
-					renderItem={({ item }) => <ProductItem item={item}></ProductItem>}
-					ListEmptyComponent={
-						isLoading ? (
-							<Text style={{ textAlign: 'center', fontSize: 18 }}>
-								Loading...
-							</Text>
-						) : (
+				{!isLoading ? (
+					<FlatList
+						data={choosenProducts}
+						renderItem={({ item }) => (
+							<ProductItem
+								item={item}
+								opinion={opinionsList?.find(
+									(opinion) => opinion.productID === item.id
+								)}
+							></ProductItem>
+						)}
+						ListEmptyComponent={
 							<Text style={{ textAlign: 'center', fontSize: 18 }}>
 								No items found
 							</Text>
-						)
-					}
-					keyExtractor={(item) => item.id}
-					style={styles.flatList}
-					contentContainerStyle={{ paddingBottom: 24 }}
-					showsVerticalScrollIndicator={false}
-				/>
+						}
+						keyExtractor={(item) => item.id}
+						style={styles.flatList}
+						contentContainerStyle={{ paddingBottom: 24 }}
+						showsVerticalScrollIndicator={false}
+					/>
+				) : (
+					<Text style={{ textAlign: 'center', marginTop: 20, fontSize: 16 }}>
+						Loading...
+					</Text>
+				)}
 			</View>
 		</View>
 	);

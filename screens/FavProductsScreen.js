@@ -1,67 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import ProductsList from '../components/ProductsList';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../redux/productsSlice';
+import { fetchReviews } from '../redux/reviewsSlice';
 
-const favProducts = [
-	{
-		id: 1,
-		name: 'Smartwatch',
-		image: 'https://source.unsplash.com/600x400/?smartwatch',
-	},
-	{
-		id: 2,
-		name: 'Desk Chair',
-		image: 'https://source.unsplash.com/600x400/?desk-chair',
-	},
-	{
-		id: 3,
-		name: 'Bluetooth Speaker',
-		image: 'https://source.unsplash.com/600x400/?bluetooth-speaker',
-	},
-];
-
-function FavProductsScreen({ productsList }) {
-	const [opinionsList, setOpinionsList] = useState(null);
-	const [favProductsList, setFavProductsList] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const phoneNumber = '733949591';
-
-	async function fetchData() {
-		setIsLoading(true);
-		const response = await fetch(
-			`http://localhost:5170/api/Reviews/ByPhoneNumber?phoneNumber=${phoneNumber}`,
-			{
-				method: 'GET',
-				headers: {
-					accept: 'text/plain',
-				},
-			}
-		);
-
-		if (response.ok) {
-			const data = await response.json();
-			console.log(data);
-			setOpinionsList(data);
-		} else {
-			console.log('Problem:', response.status);
-		}
-		setIsLoading(false);
-	}
+function FavProductsScreen({ userPhoneNumber }) {
+	const dispatch = useDispatch();
+	const products = useSelector((state) => state.products);
+	const reviews = useSelector((state) => state.reviews);
 
 	useEffect(() => {
-		fetchData();
+		dispatch(fetchProducts());
+		dispatch(fetchReviews(userPhoneNumber));
 	}, []);
 
-	useEffect(() => {
-		setFavProductsList(
-			productsList?.filter((product) =>
-				opinionsList?.find((opinion) => opinion.productID === product.id)
-			)
+	let fav = [];
+
+	if (Array.isArray(products?.data) && Array.isArray(reviews?.data)) {
+		fav = products.data.filter((product) =>
+			reviews.data.find((opinion) => opinion.productID === product.id)
 		);
-	}, [productsList, opinionsList, setFavProductsList]);
+	}
 
-	console.log(favProductsList);
-
-	return <ProductsList items={favProductsList} isLoading={isLoading} />;
+	return (
+		<ProductsList
+			items={fav}
+			opinionsList={reviews?.data}
+			isLoading={reviews.isLoading}
+		/>
+	);
 }
 
 export default FavProductsScreen;

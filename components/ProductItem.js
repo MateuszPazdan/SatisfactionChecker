@@ -3,9 +3,8 @@ import Colors from '../constants/colors';
 import { AntDesign } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 
-function ProductItem({ item, readyIn }) {
+function ProductItem({ item, readyIn, opinion }) {
 	const navigation = useNavigation();
 
 	const { image, name } = item;
@@ -27,22 +26,16 @@ function ProductItem({ item, readyIn }) {
 			>
 				<Image style={styles.image} source={{ uri: image }} />
 				<Text style={styles.itemText}>{name}</Text>
-				<Text style={styles.icon}>
-					{readyIn > 0 ? (
-						<View style={styles.counterContainer}>
-							<View>
-								<Ionicons name='timer-outline' size={24} color='black' />
-							</View>
-							<View>
-								<Text style={styles.counterStyle}>
-									{readyIn > 1 ? `${readyIn} Days` : `${readyIn} Day`}
-								</Text>
-							</View>
-						</View>
-					) : (
+				<View style={styles.iconContainer}>
+					{!opinion ? (
 						<AntDesign name='form' size={24} color='black' />
+					) : (
+						<View style={styles.starContainer}>
+							<Text style={styles.starText}>{opinion?.points}</Text>
+							<AntDesign name='staro' size={28} color={Colors.accent500} />
+						</View>
 					)}
-				</Text>
+				</View>
 			</Pressable>
 		</View>
 	);
@@ -91,12 +84,16 @@ const styles = StyleSheet.create({
 		textAlign: 'left',
 		fontSize: 16,
 	},
-	icon: {
-		width: 64,
+	iconContainer: {
 		fontSize: 24,
-		lineHeight: 64,
-		textAlign: 'center',
+		paddingHorizontal: 14,
 	},
+	starContainer: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		flexDirection: 'row',
+	},
+	starText: { fontSize: 20 },
 	pressed: { backgroundColor: Colors.whiteHover },
 	counterContainer: {
 		flex: 1,
@@ -108,3 +105,18 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 	},
 });
+
+// {readyIn > 0 ? (
+// 	<View style={styles.counterContainer}>
+// 		<View>
+// 			<Ionicons name='timer-outline' size={24} color='black' />
+// 		</View>
+// 		<View>
+// 			<Text style={styles.counterStyle}>
+// 				{readyIn > 1 ? `${readyIn} Days` : `${readyIn} Day`}
+// 			</Text>
+// 		</View>
+// 	</View>
+// ) : (
+// 	// <AntDesign name='form' size={24} color='black' />
+// )}

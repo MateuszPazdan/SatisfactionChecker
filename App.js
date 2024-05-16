@@ -20,6 +20,7 @@ import MenuPanel from './components/MenuPanel';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { createStackNavigator } from '@react-navigation/stack';
+import YourRateScreen from './screens/YourRateScreen';
 
 export default function App() {
 	const [userPhoneNumber, setUserPhoneNumber] = useState('733949591');
@@ -113,19 +114,16 @@ export default function App() {
 				{isAuthenticated ? (
 					<>
 						<NavigationContainer>
-							<Stack.Navigator>
+							<Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
 								<Stack.Screen
 									name='TabNavigator'
 									options={{ headerShown: false }}
 									component={TabNavigator}
 								/>
+								<Stack.Screen name='formScreen' component={FormScreen} />
 								<Stack.Screen
-									options={{
-										title: 'Form',
-										headerTitleAlign: 'center',
-									}}
-									name='formScreen'
-									component={FormScreen}
+									name='yourRateScreen'
+									component={YourRateScreen}
 								/>
 							</Stack.Navigator>
 						</NavigationContainer>

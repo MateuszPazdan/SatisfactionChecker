@@ -10,8 +10,9 @@ function ProductItem({ item, readyIn, opinion }) {
 	const { image, name } = item;
 
 	function pressHandler() {
-		navigation.navigate('formScreen', { item: item });
-		
+		if (!opinion) navigation.navigate('formScreen', { item: item });
+		if (opinion && item)
+			navigation.navigate('yourRateScreen', { item: item, opinion: opinion });
 	}
 
 	return (

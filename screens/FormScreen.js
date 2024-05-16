@@ -1,5 +1,5 @@
-import { useRoute } from '@react-navigation/native';
-import { useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useLayoutEffect, useState } from 'react';
 import {
 	Image,
 	StyleSheet,
@@ -17,19 +17,22 @@ import { Keyboard } from 'react-native';
 function FormScreen() {
 	const [rating, setRating] = useState(0);
 	const [review, setReview] = useState('');
+	const navigation = useNavigation();
 	const { params } = useRoute();
 	const { image, name } = params.item;
 
-	const handleRating = (rating) => {
-		setRating(rating);
-	};
+	useLayoutEffect(() => {
+		navigation.setOptions({ title: name });
+	}, [navigation, name]);
 
 	const handleReview = (text) => {
 		setReview(text);
 	};
 	const handleSubmit = () => {
-		console.log('Ocena:', rating);
-		console.log('Opinia:', review);
+		if (rating !== 0 && review !== '') {
+			console.log('Ocena:', rating);
+			console.log('Opinia:', review);
+		}
 	};
 
 	return (
@@ -37,20 +40,26 @@ function FormScreen() {
 			<View style={styles.formContainer}>
 				<View style={styles.productInfoContainer}>
 					<Image style={styles.productImage} source={{ uri: image }} />
-					{/* <Text style={styles.productText}>{name}</Text> */}
 				</View>
 				<View style={styles.feedbackContainer}>
 					<Text
 						style={{
 							textAlign: 'left',
-							fontSize: 24,
+							fontSize: 28,
 							fontWeight: 'bold',
-							marginBottom: 10,
+							marginBottom: 16,
 						}}
 					>
 						Share your feedback
 					</Text>
-					<Text style={{ textAlign: 'left', fontSize: 18 }}>
+					<Text
+						style={{
+							textAlign: 'left',
+							fontSize: 18,
+							fontWeight: 'bold',
+							marginBottom: 8,
+						}}
+					>
 						Rate your experience
 					</Text>
 					<StarRating
@@ -58,9 +67,18 @@ function FormScreen() {
 						onChange={setRating}
 						enableHalfStar={false}
 						starSize={36}
-						style={{ alignSelf: 'center' }}
+						style={{ alignSelf: 'center', marginBottom: 16 }}
 					/>
-					<Text style={{ textAlign: 'left', fontSize: 18 }}>Comment</Text>
+					<Text
+						style={{
+							textAlign: 'left',
+							fontSize: 18,
+							fontWeight: 'bold',
+							marginBottom: 8,
+						}}
+					>
+						Comment
+					</Text>
 					<TextInput
 						style={styles.commentInput}
 						onChangeText={handleReview}

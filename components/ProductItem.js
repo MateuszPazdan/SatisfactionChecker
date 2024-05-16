@@ -10,7 +10,8 @@ function ProductItem({ item, readyIn, opinion }) {
 	const { image, name } = item;
 
 	function pressHandler() {
-		navigation.navigate('formScreen');
+		navigation.navigate('formScreen', { item: item });
+		
 	}
 
 	return (

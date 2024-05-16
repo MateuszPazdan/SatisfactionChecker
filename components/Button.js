@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 	buttonOuterContainer: {
 		borderRadius: 28,
 		margin: 4,
-		borderRadius: 50,
+		borderRadius: 18,
 		overflow: Platform.OS === 'android' ? 'hidden' : 'visible',
 		backgroundColor: 'white',
 		shadowColor: Colors.shadowBlack,

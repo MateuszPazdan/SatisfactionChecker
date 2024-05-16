@@ -19,12 +19,77 @@ import MenuPanel from './components/MenuPanel';
 
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import { createStackNavigator } from '@react-navigation/stack';
 
 export default function App() {
-	const [userPhoneNumber, setUserPhoneNumber] = useState('');
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [userPhoneNumber, setUserPhoneNumber] = useState('733949591');
+	const [isAuthenticated, setIsAuthenticated] = useState(true);
 
 	const Tab = createBottomTabNavigator();
+	const Stack = createStackNavigator();
+
+	function TabNavigator() {
+		return (
+			<Tab.Navigator
+				screenOptions={{
+					tabBarActiveTintColor:
+						Platform.OS === 'android' ? Colors.shadowBlack : Colors.accent500,
+					headerStyle: {
+						borderBottomWidth: 1,
+					},
+					tabBarStyle: {},
+					headerTitleAlign: 'center',
+				}}
+				initialRouteName='AddProductsScreen'
+				tabBar={() => <MenuPanel onLogout={logoutHandle}></MenuPanel>}
+			>
+				<Tab.Screen
+					options={{
+						title: 'Your Forms',
+						headerTitleAlign: 'center',
+					}}
+					name='favouriteProducts'
+					children={() => (
+						<FavProductsScreen userPhoneNumber={userPhoneNumber} />
+					)}
+				/>
+				<Tab.Screen
+					options={{
+						// headerShown: false,
+						tabBarLabel: 'Add products',
+						tabBarIcon: ({ color, size }) => (
+							<AntDesign name='plus' size={size} color={color} />
+						),
+					}}
+					name='AddProductsScreen'
+					component={AddProductsScreen}
+				/>
+				<Tab.Screen
+					accessibilityRole='button'
+					name='Logout'
+					component={LogoutComponent}
+					options={{
+						tabBarButton: () => (
+							<TouchableOpacity
+								accessibilityRole='button'
+								onPress={logoutHandle}
+								style={{
+									flex: 1,
+									justifyContent: 'space-between',
+									alignItems: 'center',
+									marginTop: 9,
+									marginBottom: 0,
+								}}
+							>
+								<AntDesign name='logout' size={20} color={'gray'} />
+								<Text style={{ color: 'gray', fontSize: 11 }}>Logout</Text>
+							</TouchableOpacity>
+						),
+					}}
+				/>
+			</Tab.Navigator>
+		);
+	}
 
 	function logoutHandle() {
 		setUserPhoneNumber('');
@@ -48,67 +113,13 @@ export default function App() {
 				{isAuthenticated ? (
 					<>
 						<NavigationContainer>
-							<Tab.Navigator
-								screenOptions={{
-									tabBarActiveTintColor:
-										Platform.OS === 'android'
-											? Colors.shadowBlack
-											: Colors.accent500,
-									headerStyle: {
-										borderBottomWidth: 1,
-									},
-									tabBarStyle: {},
-								}}
-								initialRouteName='AddProductsScreen'
-								tabBar={() => <MenuPanel onLogout={logoutHandle}></MenuPanel>}
-							>
-								<Tab.Screen
-									options={{
-										title: 'Your Forms',
-										headerTitleAlign: 'center',
-									}}
-									name='favouriteProducts'
-									children={() => (
-										<FavProductsScreen userPhoneNumber={userPhoneNumber} />
-									)}
+							<Stack.Navigator>
+								<Stack.Screen
+									name='TabNavigator'
+									options={{ headerShown: false }}
+									component={TabNavigator}
 								/>
-								<Tab.Screen
-									options={{
-										headerShown: false,
-										tabBarLabel: 'Add products',
-										tabBarIcon: ({ color, size }) => (
-											<AntDesign name='plus' size={size} color={color} />
-										),
-									}}
-									name='AddProductsScreen'
-									component={AddProductsScreen}
-								/>
-								<Tab.Screen
-									accessibilityRole='button'
-									name='Logout'
-									component={LogoutComponent}
-									options={{
-										tabBarButton: () => (
-											<TouchableOpacity
-												accessibilityRole='button'
-												onPress={logoutHandle}
-												style={{
-													flex: 1,
-													justifyContent: 'space-between',
-													alignItems: 'center',
-													marginTop: 9,
-													marginBottom: 0,
-												}}
-											>
-												<AntDesign name='logout' size={20} color={'gray'} />
-												<Text style={{ color: 'gray', fontSize: 11 }}>
-													Logout
-												</Text>
-											</TouchableOpacity>
-										),
-									}}
-								/>
-								<Tab.Screen
+								<Stack.Screen
 									options={{
 										title: 'Form',
 										headerTitleAlign: 'center',
@@ -116,7 +127,7 @@ export default function App() {
 									name='formScreen'
 									component={FormScreen}
 								/>
-							</Tab.Navigator>
+							</Stack.Navigator>
 						</NavigationContainer>
 					</>
 				) : (

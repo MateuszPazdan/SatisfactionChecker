@@ -23,8 +23,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import YourRateScreen from './screens/YourRateScreen';
 
 export default function App() {
-	const [userPhoneNumber, setUserPhoneNumber] = useState('733949591');
-	const [isAuthenticated, setIsAuthenticated] = useState(true);
+	const [userPhoneNumber, setUserPhoneNumber] = useState('');
+	const [isAuthenticated, setIsAuthenticated] = useState();
 
 	const Tab = createBottomTabNavigator();
 	const Stack = createStackNavigator();
@@ -120,7 +120,12 @@ export default function App() {
 									options={{ headerShown: false }}
 									component={TabNavigator}
 								/>
-								<Stack.Screen name='formScreen' component={FormScreen} />
+								<Stack.Screen
+									name='formScreen'
+									children={() => (
+										<FormScreen userPhoneNumber={userPhoneNumber} />
+									)}
+								/>
 								<Stack.Screen
 									name='yourRateScreen'
 									component={YourRateScreen}

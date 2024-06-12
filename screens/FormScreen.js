@@ -13,13 +13,18 @@ import Colors from '../constants/colors';
 import Button from '../components/Button';
 import { TouchableWithoutFeedback } from 'react-native';
 import { Keyboard } from 'react-native';
+import { API_KEY } from '../util/http';
+import { useDispatch } from 'react-redux';
+import { fetchReviews } from '../redux/reviewsSlice';
+import { fetchProducts } from '../redux/productsSlice';
 
-function FormScreen() {
+function FormScreen({ userPhoneNumber }) {
 	const [rating, setRating] = useState(0);
 	const [review, setReview] = useState('');
 	const navigation = useNavigation();
 	const { params } = useRoute();
 	const { image, name } = params.item;
+	const dispatch = useDispatch();
 
 	useLayoutEffect(() => {
 		navigation.setOptions({ title: name });
@@ -30,10 +35,30 @@ function FormScreen() {
 	};
 	const handleSubmit = () => {
 		if (rating !== 0 && review !== '') {
-			console.log('Ocena:', rating);
-			console.log('Opinia:', review);
+			sendForm();
 		}
 	};
+
+	async function sendForm() {
+		const response = await fetch(`${API_KEY}/api/Reviews/AddReview`, {
+			method: 'POST',
+			headers: {
+				Accept: 'text/plain',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				phoneNumber: userPhoneNumber,
+				points: rating,
+				text: review,
+				productID: params.item.id,
+			}),
+		});
+		const data = await response.text();
+		console.log(data);
+		dispatch(fetchProducts());
+		dispatch(fetchReviews(userPhoneNumber));
+		navigation.navigate('AddProductsScreen')
+	}
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>

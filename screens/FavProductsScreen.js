@@ -18,7 +18,7 @@ function FavProductsScreen({ userPhoneNumber }) {
 
 	if (Array.isArray(products?.data) && Array.isArray(reviews?.data)) {
 		fav = products.data.filter((product) =>
-			reviews.data.find((opinion) => opinion.productID === product.id)
+			reviews.data.find((opinion) => opinion.productId === product.id)
 		);
 	}
 

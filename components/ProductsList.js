@@ -38,7 +38,7 @@ function ProductsList({ items, isLoading, opinionsList }) {
 							<ProductItem
 								item={item}
 								opinion={opinionsList?.find(
-									(opinion) => opinion.productID === item.id
+									(opinion) => opinion.productId === item.id
 								)}
 							></ProductItem>
 						)}
